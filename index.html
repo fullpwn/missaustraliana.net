@@ -1,11 +1,203 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>miss australiana</title>
-</head>
-<body>
-    
+
+    <div class="notice hidden" id="notice">
+        <h1>notice</h1>
+        <h2 id="noticeheader">test</h2>
+        <p id="noticemsg">message</p>
+        <a id="linkurl" href="#"></a>
+    </div>
+    <h1 id="title"></h1>
+    <i><p id="quote"></p></i>
+    </div>
+    <div class="projectview hidden" id="projectview">
+        <h2 id="projectstitle"></h2>
+        <div class="projectitems" id="projectitems">
+    </div>
+</div>
+    <div class="hidden" id="warriorstats">
+        <h2>archive tracker</h2>
+        <p id="placing"></p>
+        <p id="ranking"></p>
+        <p id="amount"></p>
+        <p id="sincepageload"></p>
+        <p id="updatedtime"></p>
+    </div>
+    <br>
+    <br>
+
+   
+    <!--<img src="hi.svg" class="imagehi"> -->
+    <script>
+        function viewinlowercase(value) {
+            let casing = value.toLowerCase()
+            return casing
+        }
+            fetch("settings.json").then(response => {response.json().then(data => {
+                console.log(data)
+                document.title = data.name
+                document.body.style.backgroundColor = data.backgroundcolour
+                document.body.style.color = data.accent
+                document.getElementById("title").innerHTML = data.name
+                if (data.showquoteinmarks == 1) {
+                    document.getElementById("quote").innerHTML = "'" + data.quote + "'"
+                } else {
+                    document.getElementById("quote").innerHTML = data.quote
+                }
+                if (data.shownotice == 1) {
+                    document.getElementById("noticeheader").innerHTML = data.notice.noticeheader
+                    document.getElementById("noticemsg").innerHTML = data.notice.noticemsg
+                    if (data.notice.doesnoticehavelink == 1) {
+                        document.getElementById("linkurl").innerHTML = data.notice.noticelinkname
+                        document.getElementById("linkurl").href = data.notice.noticelink
+                    }
+                    document.getElementById("notice").classList.remove("hidden")
+                }
+                if(data.showwarrior == 1) {
+                    getwarriorstats(data.warriorstatsurl, 0)
+                    warriorloadnumber = 0
+                    countrank = 1
+                    
+                }
+                allowedtoshowprojects = data.showprojects
+                allowedtoviewinlowercase = data.viewinlowercase
+                var divitem = document.createElement('div');
+                divitem.classList.add("sclicons")
+                for (let i = 0; i < data.socials.length; i++) {
+
+                var a = document.createElement('a')
+                a.href = data.socials[i].url
+                var img = document.createElement('img')
+                img.classList.add("sclicon")
+                img.src = data.socials[i].icon
+                divitem.appendChild(a)
+                a.appendChild(img)
+                document.body.appendChild(divitem)
+                
+                }
+                getprojects(data.projects)
+            })}).catch(error => document.getElementById("quote").innerHTML = "there was an error getting the rest of the page." )
+
+
+            function getprojects(url) {
+                fetch(url).then(response => {response.json().then(data => {
+                if (allowedtoshowprojects == 1) {
+                    for (let i = 0; i < data.projects.length; i++) {
+
+                        var divitem = document.createElement('div');
+                        var divtext = document.createElement('div');
+                        var projecttitle = document.createElement('h2');
+                        var projectdesc = document.createElement('p');
+                        var projectopenlink = document.createElement('a');
+                        divitem.id = "project" + i
+                        divitem.classList.add("projectitem")
+                        divtext.classList.add("projecttext")
+                        if (allowedtoviewinlowercase == 1) {
+                            projecttitle.innerHTML = viewinlowercase(data.projects[i].name)
+                            projectdesc.innerHTML = viewinlowercase(data.projects[i].description)
+                            projectopenlink.href = viewinlowercase(data.projects[i].url)
+                            projectopenlink.innerHTML = viewinlowercase("Open")
+                            document.getElementById("projectstitle").innerHTML = viewinlowercase("Projects")
+                        } else {
+                            document.getElementById("projectstitle").innerHTML = "Projects"
+                            projecttitle.innerHTML = data.projects[i].name
+                            projectdesc.innerHTML = data.projects[i].description
+                            projectopenlink.href = data.projects[i].url
+                            projectopenlink.innerHTML = "Open"
+                        }
+
+                        
+                        divitem.appendChild(divtext);
+                        divtext.appendChild(projecttitle);
+                        divtext.appendChild(projectdesc);
+                        divtext.appendChild(projectopenlink);
+                        document.getElementById("projectitems").appendChild(divitem);  
+                        document.getElementById("project" + i).appendChild(divtext);  
+                        document.getElementById("project" + i).style.borderColor = data.thirdaccent
+                    }
+                    document.getElementById("projectview").classList.remove("hidden")
+                } else {
+                    console.log("project view not implemented. skipping over that")
+                }
+            
+            })}).catch(error => document.getElementById("quote").innerHTML = "there was an error getting the rest of the page." )
+            }
+            function getwarriorstats(url, silentrefresh) {
+                
+                document.getElementById("warriorstats").classList.remove("hidden")
+                if (silentrefresh == 0) {
+                
+                document.getElementById("ranking").innerHTML = "loading.."
+                document.getElementById("updatedtime").innerHTML = ""
+                document.getElementById("amount").innerHTML = ""
+                }
+                function countranking(data) {
+                    console.log("run")
+                    ranking = 0
+                    for (let key in data.downloader_bytes) {
+                        if (data.downloader_bytes[key] > data.downloader_bytes.fullpwnmedia) {
+                            ranking++
+                         } 
+                    }
+                    
+                    var rankinglastchar = ranking.toString().slice(-1)
+                    if (rankinglastchar[0] == 1) {
+                        document.getElementById("placing").innerHTML = "i am " + ranking + "st out of " + data.downloaders.length + " other archivists."
+                    } else if (rankinglastchar[0] == 2) {
+                        document.getElementById("placing").innerHTML = "i am " + ranking + "nd out of " + data.downloaders.length + " other archivists."
+                    } else if (rankinglastchar[0] == 3) {
+                        document.getElementById("placing").innerHTML = "i am " + ranking + "rd out of " + data.downloaders.length + " other archivists."
+                    } else {
+                        document.getElementById("placing").innerHTML = "i am " + ranking + "th out of " + data.downloaders.length + " other archivists."
+                    }
+                    countrank = 0
+                }
+                
+                fetch(url).then(response => {response.json().then(data => {
+                    if (countrank == 1) {
+                        countranking(data)
+                    }
+                    let archivalsize = data.downloader_bytes.fullpwnmedia / 1.074e+9
+                    document.getElementById("amount").innerHTML = "i have preserved " + data.downloader_count.fullpwnmedia.toLocaleString() + " urls across the web. thats " + archivalsize.toFixed(2) + " GB"
+                    document.getElementById("ranking").innerHTML = ""
+                    const now = new Date();
+                    const hours = String(now.getHours()).padStart(2, '0');
+                    const minutes = String(now.getMinutes()).padStart(2, '0');
+                    const seconds = String(now.getSeconds()).padStart(2, '0');
+                    document.getElementById("updatedtime").innerHTML = `updated: ${hours}:${minutes}:${seconds}`
+                    if (warriorloadnumber == "0") {
+                        warriorloadnumber = data.downloader_count.fullpwnmedia
+                    } else {
+                        var number =  data.downloader_count.fullpwnmedia - warriorloadnumber
+                        if (number !== 0) {
+                            document.getElementById("sincepageload").innerHTML = "since the page was loaded, i have preserved " + number.toLocaleString() + " urls."
+                        }
+                        
+                    }
+                    setTimeout(() => {
+                        getwarriorstats(url, 1)
+                    }, 2000);
+                    
+            
+            })}).catch(error => document.getElementById("ranking").innerHTML = "there was an issue fetching the stats.")
+            }
+    </script>
 </body>
-</html>
+</html><!--
+     FILE ARCHIVED ON 21:08:25 Mar 02, 2024 AND RETRIEVED FROM THE
+     INTERNET ARCHIVE ON 01:38:24 Feb 19, 2025.
+     JAVASCRIPT APPENDED BY WAYBACK MACHINE, COPYRIGHT INTERNET ARCHIVE.
+
+     ALL OTHER CONTENT MAY ALSO BE PROTECTED BY COPYRIGHT (17 U.S.C.
+     SECTION 108(a)(3)).
+-->
+<!--
+playback timings (ms):
+  captures_list: 0.65
+  exclusion.robots: 0.03
+  exclusion.robots.policy: 0.018
+  esindex: 0.012
+  cdx.remote: 20.076
+  LoadShardBlock: 132.91 (3)
+  PetaboxLoader3.datanode: 172.215 (4)
+  PetaboxLoader3.resolve: 105.656 (2)
+  load_resource: 160.822
+-->

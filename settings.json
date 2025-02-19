@@ -1,0 +1,49 @@
+{
+    "name": "miss australiana",
+    "backgroundcolour": "#edece8",
+    "accent": "#625548",
+    "thirdaccent": "#857a6d",
+    "quote": "april 19 <3",
+    "showquotewithmarks": "0",
+    "projects": "projects.json",
+    "showprojects": "0",
+    "viewinlowercase": "1",
+    "showwarrior": "1",
+    "shownotice": "0",
+    "notice": {
+        "noticeheader": "welcome!",
+        "noticemsg": "welcome to the new version of the miss australiana homepage. im still testing some features of the page, so they have been disabled for production. you can still try them out at the link below.",
+        "doesnoticehavelink": "1",
+        "noticelinkname": "open beta preview",
+        "noticelink": "https://beta.missaustraliana.net/"
+    },
+
+    "warriorstatsurl": "https://legacy-api.arpa.li/urls/stats.json",
+    "socials": [
+        {
+            "name": "Bluesky",
+            "url": "https://bsky.app/profile/missaustraliana.net",
+            "icon": "icons/bsky.svg"
+            
+        },
+        {
+            "name": "Mastodon",
+            "url": "https://mstdn.social/@fullpwn",
+            "icon": "icons/mstn.svg"
+            
+        },
+        {
+            "name": "Discord",
+            "url": "https://discord.com/users/803544270732656670",
+            "icon": "icons/dcrd.svg"
+            
+        },
+        {
+            "name": "Internet Archive",
+            "url": "https://archive.org/details/@fullpwnmedia",
+            "icon": "icons/arcv.svg"
+            
+        }
+
+    ]
+}
